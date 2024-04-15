@@ -40,19 +40,11 @@ const utilities = {
       icon: icons.BgColorsOutlined
     },
     {
-      id: 'util-shadow',
-      title: 'Shadow',
+      id: 'user',
+      title: 'User',
       type: 'item',
-      url: '/shadow',
-      icon: icons.BarcodeOutlined
-    },
-    {
-      id: 'ant-icons',
-      title: 'Ant Icons',
-      type: 'item',
-      url: '/icons/ant',
-      icon: icons.AntDesignOutlined,
-      breadcrumbs: false
+      url: '/user',
+      icon: icons.BgColorsOutlined
     }
   ]
 };
