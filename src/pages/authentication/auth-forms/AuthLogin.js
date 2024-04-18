@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { loginRequest, loginSuccess, loginFailure } from 'store/actions/loginActions';
+import bcrypt from 'bcryptjs';
 // material-ui
 import {
   Button,
@@ -33,6 +35,8 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 const AuthLogin = () => {
   const [checked, setChecked] = React.useState(false);
+  const dispatch = useDispatch();
+  const users = useSelector(state => state.auth.users);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
@@ -42,29 +46,47 @@ const AuthLogin = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+ 
+
+  const handleSubmit = async (values, { setErrors, setStatus, setSubmitting }) => {
+    try {
+      
+      dispatch(loginRequest(values));
+
+      
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
+
+      const user = users.find(u => u.email === values.email);
+
+      if (user && await bcrypt.compare(values.password, user.password)) {
+        dispatch(loginSuccess(user)); 
+      } else {
+        dispatch(loginFailure('Invalid email or password'));
+      }
+
+    } catch (err) {
+      console.error(err);
+      dispatch(loginFailure(err.message));
+
+      setStatus({ success: false });
+      setErrors({ submit: err.message });
+      setSubmitting(false);
+    }
+  };
 
   return (
     <>
       <Formik
         initialValues={{
-          email: 'info@codedthemes.com',
-          password: '123456',
+          email: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>

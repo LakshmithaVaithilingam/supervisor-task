@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useDispatch} from 'react-redux';
+import { registerRequest, registerSuccess, registerFailure } from 'store/actions/authActions';
+import bcrypt from 'bcryptjs';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -15,7 +19,9 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography
+  Typography,
+  Select,
+  MenuItem
 } from '@mui/material';
 
 // third party
@@ -35,6 +41,9 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 const AuthRegister = () => {
   const [level, setLevel] = useState();
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -52,6 +61,34 @@ const AuthRegister = () => {
     changePassword('');
   }, []);
 
+
+  const handleSubmit = async (values, { setErrors, setStatus, setSubmitting, resetForm}) => {
+    try {
+
+      dispatch(registerRequest(values));
+    
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const hashedPassword = await bcrypt.hash(values.password, 10)
+      const userData = { firstname: values.firstname, lastname: values.lastname, email: values.email, role: values.role, password: hashedPassword};
+      dispatch(registerSuccess(userData));
+      
+      resetForm();
+
+      setStatus({ success: true });
+      setSubmitting(false);
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.error(err);
+      // Dispatch action to handle registration error
+      dispatch(registerFailure(err.message));
+
+      setStatus({ success: false });
+      setErrors({ submit: err.message });
+      setSubmitting(false);
+    }
+  };
+
   return (
     <>
       <Formik
@@ -59,27 +96,18 @@ const AuthRegister = () => {
           firstname: '',
           lastname: '',
           email: '',
-          company: '',
           password: '',
+          role: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required('First Name is required'),
           lastname: Yup.string().max(255).required('Last Name is required'),
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          password: Yup.string().max(255).required('Password is required'),
+          role: Yup.string().required('User Role is required')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
-            console.error(err);
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
@@ -129,27 +157,6 @@ const AuthRegister = () => {
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="company-signup">Company</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.company && errors.company)}
-                    id="company-signup"
-                    value={values.company}
-                    name="company"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Demo Inc."
-                    inputProps={{}}
-                  />
-                  {touched.company && errors.company && (
-                    <FormHelperText error id="helper-text-company-signup">
-                      {errors.company}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
                   <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
                   <OutlinedInput
                     fullWidth
@@ -170,6 +177,29 @@ const AuthRegister = () => {
                   )}
                 </Stack>
               </Grid>
+              <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="role-signup">User Role*</InputLabel>
+                <Select
+                  fullWidth
+                  error={Boolean(touched.role && errors.role)}
+                  id="role-signup"
+                  value={values.role}
+                  name="role"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  placeholder="Select User Role"
+                >
+                  <MenuItem value="supervisor">Supervisor</MenuItem>
+                  <MenuItem value="user">User</MenuItem>
+                </Select>
+                {touched.role && errors.role && (
+                  <FormHelperText error id="helper-text-role-signup">
+                    {errors.role}
+                  </FormHelperText>
+                )}
+              </Stack>
+            </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="password-signup">Password</InputLabel>

@@ -1,29 +1,31 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { useMediaQuery, Button, Stack } from '@mui/material';
+import { useMediaQuery, Stack } from '@mui/material';
+import GoogleButton from 'react-google-button';
+
+//import { googleLoginRequest, googleLoginSuccess, googleLoginFailure } from 'store/actions/OauthActions';
+//import { useDispatch } from 'react-redux';
 
 // assets
-import Google from 'assets/images/icons/google.svg';
-import Twitter from 'assets/images/icons/twitter.svg';
-import Facebook from 'assets/images/icons/facebook.svg';
+//import Google from 'assets/images/icons/google.svg';
 
 // ==============================|| FIREBASE - SOCIAL BUTTON ||============================== //
 
 const FirebaseSocial = () => {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
+  //const dispatch = useDispatch();
 
-  const googleHandler = async () => {
-    // login || singup
-  };
-
-  const twitterHandler = async () => {
-    // login || singup
-  };
-
-  const facebookHandler = async () => {
-    // login || singup
-  };
+  // const googleHandler = (response) => {
+  //   console.log(response);
+  //   dispatch(googleLoginRequest(response.profileObj));
+    
+  //   if (response?.tokenId) {
+  //     dispatch(googleLoginSuccess(response.profileObj));
+  //   } else {
+  //     dispatch(googleLoginFailure('Google login failed'));
+  //   }
+  // };
 
   return (
     <Stack
@@ -32,33 +34,9 @@ const FirebaseSocial = () => {
       justifyContent={matchDownSM ? 'space-around' : 'space-between'}
       sx={{ '& .MuiButton-startIcon': { mr: matchDownSM ? 0 : 1, ml: matchDownSM ? 0 : -0.5 } }}
     >
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        startIcon={<img src={Google} alt="Google" />}
-        onClick={googleHandler}
-      >
-        {!matchDownSM && 'Google'}
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        startIcon={<img src={Twitter} alt="Twitter" />}
-        onClick={twitterHandler}
-      >
-        {!matchDownSM && 'Twitter'}
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        startIcon={<img src={Facebook} alt="Facebook" />}
-        onClick={facebookHandler}
-      >
-        {!matchDownSM && 'Facebook'}
-      </Button>
+      <GoogleButton
+                style={{ height: "50px", width: "100%" }}
+              />
     </Stack>
   );
 };
