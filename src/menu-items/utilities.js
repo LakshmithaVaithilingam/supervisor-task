@@ -1,3 +1,5 @@
+import { UserOutlined } from '@ant-design/icons';
+
 // assets
 import {
   AppstoreAddOutlined,
@@ -15,7 +17,8 @@ const icons = {
   BarcodeOutlined,
   AntDesignOutlined,
   LoadingOutlined,
-  AppstoreAddOutlined
+  AppstoreAddOutlined,
+  UserOutlined // Adding UserOutlined icon
 };
 
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
@@ -26,25 +29,11 @@ const utilities = {
   type: 'group',
   children: [
     {
-      id: 'util-typography',
-      title: 'Typography',
-      type: 'item',
-      url: '/typography',
-      icon: icons.FontSizeOutlined
-    },
-    {
-      id: 'util-color',
-      title: 'Color',
-      type: 'item',
-      url: '/color',
-      icon: icons.BgColorsOutlined
-    },
-    {
       id: 'user',
       title: 'User',
       type: 'item',
       url: '/user',
-      icon: icons.BgColorsOutlined
+      icon: icons.UserOutlined
     }
   ]
 };

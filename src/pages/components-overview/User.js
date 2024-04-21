@@ -1,252 +1,123 @@
-// material-ui
-import { Breadcrumbs, Divider, Grid, Link, Stack, Typography } from '@mui/material';
-
-// project import
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Grid, Stack, Typography, Button } from '@mui/material';
+import { addUser, updateStatus } from '../../actions/userActions';
 import ComponentSkeleton from './ComponentSkeleton';
-import MainCard from 'components/MainCard';
 
-// ==============================|| COMPONENTS - TYPOGRAPHY ||============================== //
+const User = () => {
+  const users = useSelector((state) => state.user.users);
+  const dispatch = useDispatch();
+  const [showUsers, setShowUsers] = useState(false);
+  const [sortByName, setSortByName] = useState(false);
+  const [sortByDate, setSortByDate] = useState(false);
+  const [sortByStatus, setSortByStatus] = useState(false);
 
-const user = () => (
-  <ComponentSkeleton>
-    <Grid container spacing={3}>
-      <Grid item xs={12} lg={6}>
-        <Stack spacing={3}>
-          <MainCard title="Basic" codeHighlight>
-            <Stack spacing={0.75} sx={{ mt: -1.5 }}>
-              <Typography variant="h1">Inter</Typography>
-              <Typography variant="h5">Font Family</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Regular</Typography>
-                <Typography variant="h6">Medium</Typography>
-                <Typography variant="h6">Bold</Typography>
-              </Breadcrumbs>
-            </Stack>
-          </MainCard>
-          <MainCard title="Heading" codeHighlight>
-            <Stack spacing={2}>
-              <Typography variant="h1">H1 Heading</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 38px</Typography>
-                <Typography variant="h6">Weight: Bold</Typography>
-                <Typography variant="h6">Line Height: 46px</Typography>
-              </Breadcrumbs>
-              <Divider />
+  useEffect(() => {
+    if (users.length === 0) {
+      const sampleUserData = [
+        { name: 'John Doe', date: new Date('2024-04-19'), status: 'In Progress' },
+        { name: 'Jane Doe', date: new Date('2024-04-20'), status: 'Completed' },
+        { name: 'AAAAAAAA Doe', date: new Date('2024-04-20'), status: 'Completed' },
+      ];
 
-              <Typography variant="h2">H2 Heading</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 30px</Typography>
-                <Typography variant="h6">Weight: Bold</Typography>
-                <Typography variant="h6">Line Height: 38px</Typography>
-              </Breadcrumbs>
-              <Divider />
+      sampleUserData.forEach(user => {
+        dispatch(addUser(user.name, user.date, user.status));
+      });
+    }
+  }, [dispatch, users]);
+  
 
-              <Typography variant="h3">H3 Heading</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 24px</Typography>
-                <Typography variant="h6">Weight: Regular & Bold</Typography>
-                <Typography variant="h6">Line Height: 32px</Typography>
-              </Breadcrumbs>
-              <Divider />
+  const handleClick = () => {
+    setShowUsers(!showUsers);
+  };
 
-              <Typography variant="h4">H4 Heading</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 20px</Typography>
-                <Typography variant="h6">Weight: Bold</Typography>
-                <Typography variant="h6">Line Height: 28px</Typography>
-              </Breadcrumbs>
-              <Divider />
+  const handleSortByName = () => {
+    setSortByName(!sortByName);
+    setSortByDate(false);
+    setSortByStatus(false);
+  };
 
-              <Typography variant="h5">H5 Heading</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 16px</Typography>
-                <Typography variant="h6">Weight: Regular & Medium & Bold</Typography>
-                <Typography variant="h6">Line Height: 24px</Typography>
-              </Breadcrumbs>
-              <Divider />
+  const handleSortByDate = () => {
+    setSortByDate(!sortByDate);
+    setSortByName(false);
+    setSortByStatus(false);
+  };
 
-              <Typography variant="h6">H6 Heading / Subheading</Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 14px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 22px</Typography>
-              </Breadcrumbs>
-            </Stack>
-          </MainCard>
-          <MainCard title="Body 1" codeHighlight>
-            <>
-              <Typography variant="body1" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 14px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 22px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-          <MainCard title="Body 2" codeHighlight>
-            <>
-              <Typography variant="body2" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 12px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 20px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-          <MainCard title="Subtitle 1" codeHighlight>
-            <>
-              <Typography variant="subtitle1" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 14px</Typography>
-                <Typography variant="h6">Weight: Medium</Typography>
-                <Typography variant="h6">Line Height: 22px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-          <MainCard title="Subtitle 2" codeHighlight>
-            <>
-              <Typography variant="subtitle2" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 12px</Typography>
-                <Typography variant="h6">Weight: Medium</Typography>
-                <Typography variant="h6">Line Height: 20px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-          <MainCard title="Caption" codeHighlight>
-            <Stack spacing={1}>
-              <Typography variant="caption">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 12px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 20px</Typography>
-              </Breadcrumbs>
-            </Stack>
-          </MainCard>
-        </Stack>
+  const handleSortByStatus = () => {
+    setSortByStatus(!sortByStatus);
+    setSortByName(false);
+    setSortByDate(false);
+  };
+
+  const handleStatusChange = (id, newStatus) => {
+    dispatch(updateStatus(id, newStatus));
+  };
+
+  let sortedUsers = [...users];
+
+  if (sortByName) {
+    sortedUsers = sortedUsers.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  if (sortByDate) {
+    sortedUsers = sortedUsers.sort((a, b) => new Date(a.date) - new Date(b.date));
+  }
+
+  if (sortByStatus) {
+    sortedUsers = sortedUsers.sort((a, b) => a.status.localeCompare(b.status));
+  }
+
+  return (
+    <ComponentSkeleton>
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={12}>
+          <Stack spacing={3}>
+            <Typography variant="h4">Users</Typography>
+            <Button variant="contained" onClick={handleClick}>
+              {showUsers ? 'Hide Users' : 'Show Users'}
+            </Button>
+            {showUsers && (
+              <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByName}>
+                      User
+                      {sortByName ? '▲' : '▼'}
+                    </th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByDate}>
+                      Date
+                      {sortByDate ? '▲' : '▼'}
+                    </th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByStatus}>
+                      Status
+                      {sortByStatus ? '▲' : '▼'}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...new Map(sortedUsers.map(user => [user.name, user])).values()].map((user) => (
+                    <tr key={user.id}>
+                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.name}</td>
+                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.date.toDateString()}</td>
+                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                        <select
+                          value={user.status}
+                          onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                        >
+                          <option value="In Progress">In Progress</option>
+                          <option value="Completed">Completed</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </Stack>
+        </Grid>
       </Grid>
-      <Grid item xs={12} lg={6}>
-        <Stack spacing={3}>
-          <MainCard title="Alignment" codeHighlight>
-            <>
-              <Typography variant="body2" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Typography variant="body2" textAlign="center" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Typography variant="body2" textAlign="right">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-            </>
-          </MainCard>
-          <MainCard title="Gutter Bottom" codeHighlight>
-            <>
-              <Typography variant="body1" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 12px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 20px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-          <MainCard title="Overline" codeHighlight>
-            <Stack spacing={1.5}>
-              <Typography variant="overline">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 12px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 20px</Typography>
-              </Breadcrumbs>
-            </Stack>
-          </MainCard>
-          <MainCard title="Link" codeHighlight>
-            <Stack spacing={1.5}>
-              <Link href="#">www.mantis.com</Link>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 12px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 20px</Typography>
-              </Breadcrumbs>
-            </Stack>
-          </MainCard>
-          <MainCard title="Colors" codeHighlight>
-            <>
-              <Typography variant="h6" color="textPrimary" gutterBottom>
-                This is textPrimary text color.
-              </Typography>
-              <Typography variant="h6" color="textSecondary" gutterBottom>
-                This is textSecondary text color.
-              </Typography>
-              <Typography variant="h6" color="primary" gutterBottom>
-                This is primary text color.
-              </Typography>
-              <Typography variant="h6" color="secondary" gutterBottom>
-                This is secondary text color.
-              </Typography>
-              <Typography variant="h6" color="success" gutterBottom>
-                This is success text color.
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'warning.main' }} gutterBottom>
-                This is warning text color.
-              </Typography>
-              <Typography variant="h6" color="error" gutterBottom>
-                This is error text color.
-              </Typography>
-            </>
-          </MainCard>
-          <MainCard title="Paragraph" codeHighlight>
-            <>
-              <Typography variant="body1" gutterBottom>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 14px</Typography>
-                <Typography variant="h6">Weight: Regular</Typography>
-                <Typography variant="h6">Line Height: 22px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-          <MainCard title="Font Style" codeHighlight>
-            <>
-              <Typography variant="body1" gutterBottom sx={{ fontStyle: 'italic' }}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontStyle: 'italic' }}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Typography>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Typography variant="h6">Size: 14px</Typography>
-                <Typography variant="h6">Weight: Italic Regular & Italic Bold</Typography>
-                <Typography variant="h6">Line Height: 22px</Typography>
-              </Breadcrumbs>
-            </>
-          </MainCard>
-        </Stack>
-      </Grid>
-    </Grid>
-  </ComponentSkeleton>
-);
+    </ComponentSkeleton>
+  );
+};
 
-export default user;
+export default User;

@@ -8,8 +8,6 @@ import MainLayout from 'layout/MainLayout';
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
 
 // render - utilities
-const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')));
-const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
 const User = Loadable(lazy(() => import('pages/components-overview/User')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -23,10 +21,6 @@ const MainRoutes = {
       element: <DashboardDefault />
     },
     {
-      path: 'color',
-      element: <Color />
-    },
-    {
       path: 'dashboard',
       children: [
         {
@@ -34,10 +28,6 @@ const MainRoutes = {
           element: <DashboardDefault />
         }
       ]
-    },
-    {
-      path: 'typography',
-      element: <Typography />
     },
     {
       path: 'user',
