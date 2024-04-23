@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Grid, Stack, Typography, Button } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { addUser, updateStatus } from '../../actions/userActions';
 import ComponentSkeleton from './ComponentSkeleton';
 
 const User = () => {
   const users = useSelector((state) => state.user.users);
   const dispatch = useDispatch();
-  const [showUsers, setShowUsers] = useState(false);
   const [sortByName, setSortByName] = useState(false);
   const [sortByDate, setSortByDate] = useState(false);
   const [sortByStatus, setSortByStatus] = useState(false);
@@ -16,8 +15,8 @@ const User = () => {
     if (users.length === 0) {
       const sampleUserData = [
         { name: 'John Doe', date: new Date('2024-04-19'), status: 'In Progress' },
-        { name: 'Jane Doe', date: new Date('2024-04-20'), status: 'Completed' },
-        { name: 'AAAAAAAA Doe', date: new Date('2024-04-20'), status: 'Completed' },
+        { name: 'Anne Doe', date: new Date('2024-04-20'), status: 'Completed' },
+        { name: 'Jenny Doe', date: new Date('2024-04-20'), status: 'Completed' },
       ];
 
       sampleUserData.forEach(user => {
@@ -26,10 +25,6 @@ const User = () => {
     }
   }, [dispatch, users]);
   
-
-  const handleClick = () => {
-    setShowUsers(!showUsers);
-  };
 
   const handleSortByName = () => {
     setSortByName(!sortByName);
@@ -73,46 +68,41 @@ const User = () => {
         <Grid item xs={12} lg={12}>
           <Stack spacing={3}>
             <Typography variant="h4">Users</Typography>
-            <Button variant="contained" onClick={handleClick}>
-              {showUsers ? 'Hide Users' : 'Show Users'}
-            </Button>
-            {showUsers && (
-              <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-                <thead>
-                  <tr>
-                    <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByName}>
-                      User
-                      {sortByName ? '▲' : '▼'}
-                    </th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByDate}>
-                      Date
-                      {sortByDate ? '▲' : '▼'}
-                    </th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByStatus}>
-                      Status
-                      {sortByStatus ? '▲' : '▼'}
-                    </th>
+            <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+              <thead>
+                <tr>
+                  <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByName}>
+                    User
+                    {sortByName ? '▲' : '▼'}
+                  </th>
+                  <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByDate}>
+                    Date
+                    {sortByDate ? '▲' : '▼'}
+                  </th>
+                  <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByStatus}>
+                    Status
+                    {sortByStatus ? '▲' : '▼'}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...new Map(sortedUsers.map(user => [user.name, user])).values()].map((user) => (
+                  <tr key={user.id}>
+                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.name}</td>
+                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.date.toDateString()}</td>
+                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                      <select
+                        value={user.status}
+                        onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                      >
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {[...new Map(sortedUsers.map(user => [user.name, user])).values()].map((user) => (
-                    <tr key={user.id}>
-                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.name}</td>
-                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.date.toDateString()}</td>
-                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                        <select
-                          value={user.status}
-                          onChange={(e) => handleStatusChange(user.id, e.target.value)}
-                        >
-                          <option value="In Progress">In Progress</option>
-                          <option value="Completed">Completed</option>
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                ))}
+              </tbody>
+            </table>
           </Stack>
         </Grid>
       </Grid>
