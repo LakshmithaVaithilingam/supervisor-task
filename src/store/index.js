@@ -1,15 +1,18 @@
 // third-party
 import { configureStore } from '@reduxjs/toolkit';
+import { persistStore } from 'redux-persist';
 
 // project import
-import reducers from './reducers';
+import persistedReducer from './reducers';
 
 // ==============================|| REDUX TOOLKIT - MAIN STORE ||============================== //
 
+// Configure store with persisted reducer
 const store = configureStore({
-  reducer: reducers
+  reducer: persistedReducer
 });
 
-const { dispatch } = store;
+// Create persistor
+const persistor = persistStore(store);
 
-export { store, dispatch };
+export { store, persistor };

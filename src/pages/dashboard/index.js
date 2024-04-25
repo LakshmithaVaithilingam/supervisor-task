@@ -22,11 +22,11 @@ const DashboardDefault = () => {
     assignedUsers: []
   };
 
-  // Sample data for tasks in review
-  const tasksInReview = [
-    { id: 1, title: 'Review Task 1', deadline: '2024-04-30', completedBy: ['User1'] },
-    { id: 2, title: 'Review Task 2', deadline: '2024-05-05', completedBy: ['User2'] },
-  ];
+  // // Sample data for tasks in review
+  // const tasksInReview = [
+  //   { id: 1, title: 'Review Task 1', deadline: '2024-04-30', completedBy: ['User1'] },
+  //   { id: 2, title: 'Review Task 2', deadline: '2024-05-05', completedBy: ['User2'] },
+  // ];
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -111,11 +111,11 @@ const DashboardDefault = () => {
             Tasks in Review
           </Typography>
           <List>
-            {tasksInReview.map((task) => (
+            {tasks.map((task) => (
               <ListItem key={task.id} disablePadding>
                 <ListItemText
                   primary={task.title}
-                  secondary={`Deadline: ${task.deadline}, Completed by: ${task.completedBy.join(', ')}`}
+                  secondary={`Deadline: ${task.deadline}, Completed by: ${task.completedBy}`}
                 />
                 <ListItemSecondaryAction>
                   <Checkbox edge="end" />

@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginRequest, loginSuccess, loginFailure } from 'store/actions/loginActions';
 import bcrypt from 'bcryptjs';
+import { useNavigate } from 'react-router-dom';
 // material-ui
 import {
   Button,
@@ -37,6 +38,7 @@ const AuthLogin = () => {
   const [checked, setChecked] = React.useState(false);
   const dispatch = useDispatch();
   const users = useSelector(state => state.auth.users);
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
@@ -60,6 +62,7 @@ const AuthLogin = () => {
 
       if (user && await bcrypt.compare(values.password, user.password)) {
         dispatch(loginSuccess(user)); 
+        navigate("/dashboard/default", { replace: true });
       } else {
         dispatch(loginFailure('Invalid email or password'));
       }

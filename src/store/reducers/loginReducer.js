@@ -4,7 +4,7 @@ import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE } from '../actions/loginAct
 const initialState = {
   loading: false,
   error: null,
-  loggedInUser: null
+  loggedInUser: []
 };
 
 const loginReducer = (state = initialState, action) => {
