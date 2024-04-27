@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Typography, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTaskRequest, createTaskSuccess, createTaskFailure } from 'store/actions/taskActions';
+import { createTaskRequest, createTaskSuccess, createTaskFailure, approveTaskCompletion, removeTaskFromReview } from 'store/actions/taskActions';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 const DashboardDefault = () => {
   const [openTaskForm, setOpenTaskForm] = useState(false);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const dispatch = useDispatch();
   const users = useSelector((state) => state.auth.users);
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -30,6 +32,9 @@ const DashboardDefault = () => {
     assignedUsers: []
   };
 
+  useEffect(() => {
+    setFilteredTasks(tasks);
+  }, [tasks]);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -45,6 +50,23 @@ const DashboardDefault = () => {
   const handleTaskFormClose = () => {
     setOpenTaskForm(false);
   };
+
+  const handleTaskApproval = (taskId) => {
+    dispatch(approveTaskCompletion(taskId));
+    dispatch(removeTaskFromReview(taskId));
+  };
+
+  const handleUserChange = (event) => {
+  const selectedUser = event.target.value;
+  setSelectedUser(selectedUser);
+  // If selectedUser is not empty, filter tasks based on the selected user
+  if (selectedUser) {
+    setFilteredTasks(tasks.filter(task => task.assignedUsers.includes(selectedUser)));
+  } else {
+    // If selectedUser is empty, show all tasks
+    setFilteredTasks(tasks);
+  }
+};
 
   const handleTaskFormSubmit = async (values, { resetForm }) => {
     try {
@@ -84,13 +106,29 @@ const DashboardDefault = () => {
           Create Task
         </Button>
       </Grid>
+      <Grid item xs={12}>
+        <FormControl fullWidth>
+          <InputLabel id="assigned-user-filter-label">Filter by Assigned User</InputLabel>
+          <Select
+            labelId="assigned-user-filter-label"
+            id="assigned-user-filter"
+            value={selectedUser}
+            onChange={handleUserChange}
+          >
+            <MenuItem value="">All Users</MenuItem>
+            {userNames.map((user) => (
+              <MenuItem key={user.email} value={user.email}>{user.fullName}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
       <Grid item xs={12} md={4}>
         <Paper>
           <Typography variant="h6" component="div" gutterBottom>
             Ongoing Tasks
           </Typography>
           <List>
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <ListItem key={task.id} disablePadding>
                 <ListItemText
                   primary={task.title}
@@ -107,7 +145,7 @@ const DashboardDefault = () => {
             Allocated Tasks
           </Typography>
           <List>
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <ListItem key={task.id} disablePadding>
               <ListItemText
                 primary={task.title}
@@ -140,7 +178,7 @@ const DashboardDefault = () => {
             Tasks in Review
           </Typography>
           <List>
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <ListItem key={task.id} disablePadding>
               <Grid container alignItems="center">
                 <Grid item xs={5}>
@@ -169,7 +207,9 @@ const DashboardDefault = () => {
                 </Grid>
                 <Grid item xs={2} style={{ textAlign: 'right' }}>
                   <ListItemSecondaryAction>
-                    <Checkbox edge="end" />
+                    <Checkbox edge="end" 
+                    onChange={() => handleTaskApproval(task.id)}
+                    />
                   </ListItemSecondaryAction>
                 </Grid>
               </Grid>

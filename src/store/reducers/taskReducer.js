@@ -4,7 +4,9 @@ import {
   CREATE_TASK_REQUEST,
   CREATE_TASK_SUCCESS,
   CREATE_TASK_FAILURE,
-  MARK_TASK_AS_COMPLETED
+  MARK_TASK_AS_COMPLETED,
+  APPROVE_TASK_COMPLETION,
+  REMOVE_TASK_FROM_REVIEW
 } from '../actions/taskActions';
 
 const initialState = {
@@ -47,6 +49,20 @@ const taskReducer = (state = initialState, action) => {
             : task
         )
       };
+    case APPROVE_TASK_COMPLETION:
+      taskId = action.payload;
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === taskId ? { ...task, status: 'Completed' } : task
+        )
+      };
+    case REMOVE_TASK_FROM_REVIEW:
+      taskId = action.payload;
+      return {
+        ...state,
+        tasks: state.tasks.filter(task => task.id !== taskId)
+      };  
     default:
       return state;
   }
