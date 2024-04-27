@@ -4,6 +4,7 @@ import { useDispatch} from 'react-redux';
 import { registerRequest, registerSuccess, registerFailure } from 'store/actions/authActions';
 import bcrypt from 'bcryptjs';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 // material-ui
 import {
@@ -61,16 +62,20 @@ const AuthRegister = () => {
     changePassword('');
   }, []);
 
+  const generateUniqueUserId = () => {
+    return uuidv4();
+  };
 
   const handleSubmit = async (values, { setErrors, setStatus, setSubmitting, resetForm}) => {
     try {
 
       dispatch(registerRequest(values));
     
+      const userId = generateUniqueUserId();
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const hashedPassword = await bcrypt.hash(values.password, 10)
-      const userData = { firstname: values.firstname, lastname: values.lastname, email: values.email, role: values.role, password: hashedPassword};
+      const userData = { id: userId, firstname: values.firstname, lastname: values.lastname, email: values.email, role: values.role, password: hashedPassword};
       dispatch(registerSuccess(userData));
       
       resetForm();

@@ -1,27 +1,37 @@
-// material-ui
+import React from 'react';
 import { Box, Typography } from '@mui/material';
-
-// project import
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
-
-// ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
+import menuItem from 'menu-items'; // Assuming this is where your menu items are defined
+import { useSelector } from 'react-redux';
 
 const Navigation = () => {
-  const navGroups = menuItem.items.map((item) => {
-    switch (item.type) {
-      case 'group':
-        return <NavGroup key={item.id} item={item} />;
-      default:
-        return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
-            Fix - Navigation Group
-          </Typography>
-        );
-    }
-  });
+  const loggedInUser = useSelector(state => state.login.loggedInUser);
 
-  return <Box sx={{ pt: 2 }}>{navGroups}</Box>;
+  // Determine which menu item to render based on user's role
+  const renderMenuItem = () => {
+    switch (loggedInUser.role) {
+      case 'supervisor':
+        return menuItem.items.find(item => item.id === 'group-dashboard');
+      case 'user':
+        return menuItem.items.find(item => item.id === 'support');
+      default:
+        return null;
+    }
+  };
+
+  const menuItemToRender = renderMenuItem();
+
+  return (
+    <Box sx={{ pt: 2 }}>
+      {menuItemToRender ? (
+        <NavGroup key={menuItemToRender.id} item={menuItemToRender} />
+      ) : (
+        <Typography variant="h6" color="error" align="center">
+          No menu item available for this role
+        </Typography>
+      )}
+    </Box>
+  );
 };
 
 export default Navigation;

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from 'store/actions/loginActions';
+import { useNavigate } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -54,9 +56,13 @@ function a11yProps(index) {
 
 const Profile = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const loggedInUser = useSelector(state => state.login.loggedInUser);
 
   const handleLogout = async () => {
-    // logout
+    dispatch(logout(loggedInUser.id));
+    navigate("/login", { replace: true });
   };
 
   const anchorRef = useRef(null);
@@ -97,7 +103,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">John Doe</Typography>
+          <Typography variant="subtitle1">{loggedInUser.firstname}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -140,9 +146,9 @@ const Profile = () => {
                           <Stack direction="row" spacing={1.25} alignItems="center">
                             <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">John Doe</Typography>
+                            <Typography variant="subtitle1">{loggedInUser.firstname} {loggedInUser.lastname}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                Supervisor
+                              {loggedInUser.role}
                               </Typography>
                             </Stack>
                           </Stack>

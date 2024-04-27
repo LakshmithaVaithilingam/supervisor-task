@@ -62,7 +62,11 @@ const AuthLogin = () => {
 
       if (user && await bcrypt.compare(values.password, user.password)) {
         dispatch(loginSuccess(user)); 
-        navigate("/dashboard/default", { replace: true });
+        if (user.role === 'supervisor') {
+          navigate("/dashboard/default", { replace: true });
+        } else {
+          navigate("/sample-page", { replace: true });
+        }
       } else {
         dispatch(loginFailure('Invalid email or password'));
       }

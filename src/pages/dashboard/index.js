@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Grid, Paper, Typography, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Grid, Paper, Typography, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTaskRequest, createTaskSuccess, createTaskFailure } from 'store/actions/taskActions';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
+import { v4 as uuidv4 } from 'uuid';
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const DashboardDefault = () => {
@@ -13,20 +13,22 @@ const DashboardDefault = () => {
   const users = useSelector((state) => state.auth.users);
   const tasks = useSelector((state) => state.tasks.tasks);
 
-  const userNames = users.filter(user => user.role === 'user').map(user => user.firstname);
+  //const userNames = users.filter(user => user.role === 'user').map(user => user.firstname);
+  const userNames = users
+  .filter(user => user.role === 'user')
+  .map(user => ({ 
+    fullName: `${user.firstname} ${user.lastname}`,
+    email: user.email 
+  }));
   
   const initialValues = {
+    id: uuidv4(),
     title: '',
     description: '',
     deadline: '',
     assignedUsers: []
   };
 
-  // // Sample data for tasks in review
-  // const tasksInReview = [
-  //   { id: 1, title: 'Review Task 1', deadline: '2024-04-30', completedBy: ['User1'] },
-  //   { id: 2, title: 'Review Task 2', deadline: '2024-05-05', completedBy: ['User2'] },
-  // ];
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -96,11 +98,27 @@ const DashboardDefault = () => {
           <List>
             {tasks.map((task) => (
               <ListItem key={task.id} disablePadding>
-                <ListItemText
-                  primary={task.title}
-                  secondary={`Deadline: ${task.deadline}, Assigned to: ${task.assignedUsers.join(', ')}`}
-                />
-              </ListItem>
+              <ListItemText
+                primary={task.title}
+                secondary={
+                  <>
+                    Deadline: {task.deadline}
+                    <br />
+                    Assigned to:
+                    <ul style={{ margin: 0, paddingInlineStart: '20px' }}>
+                      {task.assignedUsers.map((email) => (
+                        <li key={email}>
+                          <Tooltip title={email}>
+                            <span>{userNames.find(user => user.email === email)?.fullName}</span>
+                          </Tooltip>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                }
+              />
+            </ListItem>
+            
             ))}
           </List>
         </Paper>
@@ -113,14 +131,38 @@ const DashboardDefault = () => {
           <List>
             {tasks.map((task) => (
               <ListItem key={task.id} disablePadding>
-                <ListItemText
-                  primary={task.title}
-                  secondary={`Deadline: ${task.deadline}, Completed by: ${task.completedBy}`}
-                />
-                <ListItemSecondaryAction>
-                  <Checkbox edge="end" />
-                </ListItemSecondaryAction>
-              </ListItem>
+              <Grid container alignItems="center">
+                <Grid item xs={5}>
+                  <ListItemText
+                    primary={task.title}
+                    secondary={`Deadline: ${task.deadline}`}
+                  />
+                </Grid>
+                <Grid item xs={5}>
+                  <ListItemText
+                    primary="Completed by:"
+                    secondary={
+                      <Grid container direction="column" alignItems="flex-start">
+                        {task.completedBy.map((email) => (
+                          <Grid item key={email}>
+                            <Tooltip title={email}>
+                              <span>
+                                {userNames.find((user) => user.email === email)?.fullName}
+                              </span>
+                            </Tooltip>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    }
+                  />
+                </Grid>
+                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                  <ListItemSecondaryAction>
+                    <Checkbox edge="end" />
+                  </ListItemSecondaryAction>
+                </Grid>
+              </Grid>
+            </ListItem>            
             ))}
           </List>
         </Paper>
@@ -181,8 +223,10 @@ const DashboardDefault = () => {
                     name="assignedUsers"
                     multiple
                   >
-                    {userNames.map((name) => (
-                      <MenuItem key={name} value={name}>{name}</MenuItem>
+                    {userNames.map((user) => (
+                      <MenuItem key={user.email} value={user.email}>
+                      {`${user.fullName} - ${user.email}`}
+                    </MenuItem>
                     ))}
                   </Field>
                   <ErrorMessage name="assignedUsers" component="div" className="error" />
