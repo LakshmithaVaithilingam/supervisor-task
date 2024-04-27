@@ -6,12 +6,23 @@ import { markTaskAsCompleted } from 'store/actions/taskActions'; // Import the a
 const SamplePage = () => {
   const loggedInUser = useSelector(state => state.login.loggedInUser);
   const userTasks = useSelector(state => state.tasks.tasks.filter(task => task.assignedUsers.includes(loggedInUser.email)));
+  const userRole = useSelector((state) => state.login.loggedInUser.role);
   const dispatch = useDispatch();
 
   const handleTaskCompletion = (taskId) => {
     // Dispatch the action to mark the task as completed only for the current user
     dispatch(markTaskAsCompleted(taskId, loggedInUser.email));
   };
+
+  // Authorization check
+  if (userRole !== 'user') {
+    return (
+      <div>
+        <Typography variant="h2" gutterBottom>Access Denied</Typography>
+        <Typography variant="body1">You are not authorized to access this page.</Typography>
+      </div>
+    );
+  }
 
   return (
     <div>
