@@ -63,7 +63,7 @@ const AuthLogin = () => {
       if (user && await bcrypt.compare(values.password, user.password)) {
         dispatch(loginSuccess(user)); 
         if (user.role === 'supervisor') {
-          navigate("/dashboard/default", { replace: true });
+          navigate("/dashboard", { replace: true });
         } else {
           navigate("/sample-page", { replace: true });
         }

@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items'; // Assuming this is where your menu items are defined
+import menuItem from 'menu-items'; 
 import { useSelector } from 'react-redux';
 
 const Navigation = () => {
   const loggedInUser = useSelector(state => state.login.loggedInUser);
 
-  // Determine which menu item to render based on user's role
   const renderMenuItem = () => {
     switch (loggedInUser.role) {
       case 'supervisor':

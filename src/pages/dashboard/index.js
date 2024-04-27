@@ -12,6 +12,7 @@ const DashboardDefault = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.auth.users);
   const tasks = useSelector((state) => state.tasks.tasks);
+  const userRole = useSelector((state) => state.login.loggedInUser.role);
 
   //const userNames = users.filter(user => user.role === 'user').map(user => user.firstname);
   const userNames = users
@@ -60,6 +61,16 @@ const DashboardDefault = () => {
       console.error('Error creating task:', error);
     }
   };
+  
+  // Authorization check
+  if (userRole !== 'supervisor') {
+    return (
+      <div>
+        <Typography variant="h2" gutterBottom>Access Denied</Typography>
+        <Typography variant="body1">You are not authorized to access this page.</Typography>
+      </div>
+    );
+  }
 
   return (
     <Grid container spacing={3}>
