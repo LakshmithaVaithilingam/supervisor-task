@@ -14,9 +14,9 @@ const User = () => {
   useEffect(() => {
     if (users.length === 0) {
       const sampleUserData = [
-        { name: 'John Doe', date: new Date('2024-04-19'), status: 'In Progress' },
-        { name: 'Anne Doe', date: new Date('2024-04-20'), status: 'Completed' },
-        { name: 'Jenny Doe', date: new Date('2024-04-20'), status: 'Completed' },
+        { name: 'Task 1', date: new Date('2024-04-19'), status: 'In Progress' },
+        { name: 'Task 2', date: new Date('2024-04-20'), status: 'Completed' },
+        { name: 'Task 3', date: new Date('2024-04-20'), status: 'Completed' },
       ];
 
       sampleUserData.forEach(user => {
@@ -72,7 +72,7 @@ const User = () => {
               <thead>
                 <tr>
                   <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByName}>
-                    User
+                    Task Name
                     {sortByName ? '▲' : '▼'}
                   </th>
                   <th style={{ border: '1px solid #ddd', padding: '8px', position: 'relative' }} onClick={handleSortByDate}>
