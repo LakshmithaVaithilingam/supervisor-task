@@ -11,6 +11,9 @@ const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
 
+// render - guest page
+const GuestPage = Loadable(lazy(() => import('pages/extra-pages/GuestPage')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -25,6 +28,10 @@ const MainRoutes = {
     {
       path: 'sample-page',
       element: <ProtectedRoute path="/sample-page"><SamplePage /></ProtectedRoute>
+    },
+    {
+      path: 'guest-page',
+      element: <GuestPage />
     }
   ]
 };

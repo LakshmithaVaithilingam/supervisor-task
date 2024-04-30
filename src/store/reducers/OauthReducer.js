@@ -2,6 +2,7 @@ import {
     GOOGLE_LOGIN_REQUEST,
     GOOGLE_LOGIN_SUCCESS,
     GOOGLE_LOGIN_FAILURE,
+    GOOGLE_LOGOUT,
   } from '../actions/OauthActions';
   
   const initialState = {
@@ -30,6 +31,11 @@ import {
           loading: false,
           error: action.payload,
         };
+      case GOOGLE_LOGOUT: 
+        return {
+        ...state,
+        loggedInUser: null,
+        };  
       default:
         return state;
     }

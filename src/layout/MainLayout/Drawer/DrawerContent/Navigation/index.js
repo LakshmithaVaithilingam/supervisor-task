@@ -14,7 +14,7 @@ const Navigation = () => {
       case 'user':
         return menuItem.items.find(item => item.id === 'support');
       default:
-        return null;
+        return menuItem.items.find(item => item.id === 'group-dashboard');
     }
   };
 

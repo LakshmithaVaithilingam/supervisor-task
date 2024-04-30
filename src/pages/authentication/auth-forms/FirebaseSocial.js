@@ -1,31 +1,43 @@
-// material-ui
 import { useTheme } from '@mui/material/styles';
-import { useMediaQuery, Stack } from '@mui/material';
-import GoogleButton from 'react-google-button';
-
-//import { googleLoginRequest, googleLoginSuccess, googleLoginFailure } from 'store/actions/OauthActions';
-//import { useDispatch } from 'react-redux';
-
-// assets
-//import Google from 'assets/images/icons/google.svg';
-
-// ==============================|| FIREBASE - SOCIAL BUTTON ||============================== //
+import { useMediaQuery, Button, Stack } from '@mui/material';
+import Google from 'assets/images/icons/google.svg';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '  FirebaseConfig';
+import { googleLoginRequest, googleLoginSuccess, googleLoginFailure} from 'store/actions/OauthActions';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const FirebaseSocial = () => {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // const googleHandler = (response) => {
-  //   console.log(response);
-  //   dispatch(googleLoginRequest(response.profileObj));
-    
-  //   if (response?.tokenId) {
-  //     dispatch(googleLoginSuccess(response.profileObj));
-  //   } else {
-  //     dispatch(googleLoginFailure('Google login failed'));
-  //   }
-  // };
+  const googleHandler = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      dispatch(googleLoginRequest());
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userData = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        phoneNumber: user.phoneNumber,
+        emailVerified: user.emailVerified,
+        providerId: user.providerId,
+        createdAt: user.metadata.creationTime,
+        lastLoginAt: user.metadata.lastSignInTime,
+      };
+      dispatch(googleLoginSuccess(userData));
+      navigate("/guest-page");
+    } catch (error) {
+      console.error(error);
+      dispatch(googleLoginFailure(error));
+    }
+  };
+  
 
   return (
     <Stack
@@ -34,9 +46,15 @@ const FirebaseSocial = () => {
       justifyContent={matchDownSM ? 'space-around' : 'space-between'}
       sx={{ '& .MuiButton-startIcon': { mr: matchDownSM ? 0 : 1, ml: matchDownSM ? 0 : -0.5 } }}
     >
-      <GoogleButton
-                style={{ height: "50px", width: "100%" }}
-              />
+      <Button
+        variant="outlined"
+        color="secondary"
+        fullWidth={!matchDownSM}
+        startIcon={<img src={Google} alt="Google" />}
+        onClick={googleHandler}
+      >
+        {!matchDownSM && 'Google'}
+      </Button>   
     </Stack>
   );
 };
